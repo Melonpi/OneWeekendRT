@@ -12,6 +12,9 @@ namespace ow
 		Vec3 direction;
 	public:
 		Ray() {}
+		Ray(const Ray& ray)
+			:origin(ray.origin), direction(ray.direction)
+		{}
 		Ray(const Vec3& origin, const Vec3& direction)
 			:origin(origin), direction(direction)
 		{}

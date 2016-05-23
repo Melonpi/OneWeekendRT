@@ -7,10 +7,22 @@
 
 namespace ow
 {
-	class Sphere : public Hitable
+	class Sphere final : public Hitable
 	{
 	public:
 		Vec3 center;
+		real radius;
+	public:
+		Sphere()
+			:center(Vec3(0, 0, 0)), radius(1.0)
+		{}
+		Sphere(const Vec3& center, float radius)
+			:center(center), radius(radius)
+		{}
+		~Sphere()
+		{}
+
+		virtual bool hit(const Ray& ray, real t_min, real t_max, HitInfo& hit_info) const override;
 	};
 }
 

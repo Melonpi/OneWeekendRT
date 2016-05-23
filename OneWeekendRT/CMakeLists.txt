@@ -4,6 +4,7 @@ SET(HEADER_FILES
     ./include/Types.h
     ./include/Vec3.h
     ./include/Hitable.h
+	./include/HitableList.h
     ./include/Misc.h
     ./include/Ray.h
     ./include/Sphere.h
@@ -14,6 +15,8 @@ SET(HEADER_FILES
 SET(SRC_FILES 
     ./src/main.cpp
     ./src/stb_image_write.cpp
+	./src/HitableList.cpp
+	./src/Sphere.cpp
     )
 
 SOURCE_GROUP("Header Files" FILES ${HEADER_FILES})
