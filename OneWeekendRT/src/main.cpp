@@ -34,8 +34,8 @@ int main(int argc, const char* argv[])
 	{
 		for (int i = 0; i < w; ++i)
 		{
-			real u = float(i) / float(w);
-			real v = float(j) / float(h);
+			real u = real(i) / real(w);
+			real v = real(j) / real(h);
 			Ray ray(origin, lower_left_corner + u*horizontal + v*vertical);
 			Vec3 col = color(ray);
 			data[(h-j-1)*w*RGBA + i*RGBA    ] = int(col.r * 255.99);

@@ -81,7 +81,7 @@ namespace ow
 
 		inline void normalize()
 		{
-			real inv_length = 1.0 / length();
+			real inv_length = 1.0f / length();
 			x *= inv_length;
 			y *= inv_length;
 			z *= inv_length;
@@ -120,7 +120,7 @@ namespace ow
 
 	inline Vec3 operator/(const Vec3& lhs, real t)
 	{
-		real inv_t = 1.0 / t;
+		real inv_t = 1.0f / t;
 		return Vec3(lhs.x * inv_t, lhs.y * inv_t, lhs.z * inv_t);
 	}
 
