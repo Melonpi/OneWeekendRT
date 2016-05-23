@@ -1,13 +1,16 @@
 #include "stb_image_write.h"
 #include "Sphere.h"
 #include "HitableList.h"
+#include "Camera.h"
 
 using namespace ow;
 
+#include <random>
 #include <iostream>
 
-const int WIDTH = 1920;
-const int HEIGHT = 1080;
+const int WIDTH = 200;
+const int HEIGHT = 100;
+const int SAMPLES = 100;
 const int RGBA = 4;
 typedef unsigned char byte;
 
@@ -29,26 +32,30 @@ int main(int argc, const char* argv[])
 	Vec3 v;
 	int w = WIDTH;
 	int h = HEIGHT;
+	int s = SAMPLES;
 	std::unique_ptr<byte> data = std::unique_ptr<byte>(new byte[w * h * RGBA]);
-
-	Vec3 lower_left_corner(-8.0, -4.5, -1.0);
-	Vec3 horizontal(16.0, 0.0, 0.0);
-	Vec3 vertical(0.0, 9.0, 0.0);
-	Vec3 origin(0.0, 0.0, 0.0);
 
 	HitableList scene;
 	scene.add( std::unique_ptr<Sphere>(new Sphere(Vec3(0, 0, -1), 0.5)) );
 	scene.add( std::unique_ptr<Sphere>(new Sphere(Vec3(0, -100.5, -1), 100)) );
+	Camera camera;
+	std::random_device rnd;
+	std::mt19937_64 rne(rnd());
+	std::uniform_real_distribution<real> rng(0, 1);
 	for (int j = 0; j < h; ++j)
 	{
 		for (int i = 0; i < w; ++i)
 		{
-			real u = real(i) / real(w);
-			real v = real(j) / real(h);
-			Ray ray(origin, lower_left_corner + u*horizontal + v*vertical);
-
-			Vec3 p = ray.pointAtParameter(2.0);
-			Vec3 col = color(ray, scene);
+			Vec3 col(0, 0, 0);
+			for (int n = 0; n < s; ++n)
+			{
+				real u = real(i + rng(rne)) / real(w);
+				real v = real(j + rng(rne)) / real(h);
+				Ray ray = camera.getRay(u, v);
+				Vec3 p = ray.pointAtParameter(2.0);
+				col += color(ray, scene);
+			}
+			col /= real(s);
 			data.get()[(h-j-1)*w*RGBA + i*RGBA    ] = int(col.r * 255.99);
 			data.get()[(h-j-1)*w*RGBA + i*RGBA + 1] = int(col.g * 255.99);
 			data.get()[(h-j-1)*w*RGBA + i*RGBA + 2] = int(col.b * 255.99);

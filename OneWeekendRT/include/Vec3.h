@@ -69,6 +69,23 @@ namespace ow
 			return *this;
 		}
 
+		inline Vec3& operator*=(real t)
+		{
+			this->x *= t;
+			this->y *= t;
+			this->z *= t;
+			return *this;
+		}
+
+		inline Vec3& operator/=(real t)
+		{
+			real inv_t = 1.0f / t;
+			this->x *= inv_t;
+			this->y *= inv_t;
+			this->z *= inv_t;
+			return *this;
+		}
+
 		inline real length() const
 		{
 			return sqrt(x*x + y*y + z*z);

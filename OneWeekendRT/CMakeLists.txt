@@ -1,6 +1,7 @@
 INCLUDE_DIRECTORIES(./include)
 
 SET(HEADER_FILES 
+	./include/Camera.h
     ./include/Types.h
     ./include/Vec3.h
     ./include/Hitable.h
