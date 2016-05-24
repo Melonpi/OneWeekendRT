@@ -48,10 +48,11 @@ int main(int argc, const char* argv[])
 	HitableList scene;
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(0, 0, -1), 0.5f, std::shared_ptr<Material>(new Lambertian(Vec3(0.1f, 0.2f, 0.5f))))));
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(0, -100.5, -1), 100.f, std::shared_ptr<Material>(new Lambertian(Vec3(0.8f, 0.8f, 0.0f))))));
-	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(1, 0, -1), 0.5f, std::shared_ptr<Material>(new Dielectric(1.5f)))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.6f, 0.2f), 0.3f)))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), 0.5f, std::shared_ptr<Material>(new Dielectric(1.5f)))));
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), -0.45f, std::shared_ptr<Material>(new Dielectric(1.5f)))));
 
-	Camera camera;
+	Camera camera(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), 90, real(w)/real(h));
 	for (int j = 0; j < h; ++j)
 	{
 		for (int i = 0; i < w; ++i)
