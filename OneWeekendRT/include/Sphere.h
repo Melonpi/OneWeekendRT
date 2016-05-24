@@ -14,7 +14,7 @@ namespace ow
 		real radius;
 		std::shared_ptr<Material> material;
 	public:
-		Sphere(const Vec3& center, float radius, std::shared_ptr<Material> material)
+		Sphere(const Vec3& center, real radius, std::shared_ptr<Material> material)
 			:center(center), radius(radius), material(material)
 		{}
 		~Sphere()
