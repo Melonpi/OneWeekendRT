@@ -24,6 +24,15 @@ namespace ow
 			} while (p.lengthSquared() >= 1.0);
 			return p;
 		}
+
+		static Vec3 randomInUnitDisk()
+		{
+			Vec3 p;
+			do {
+				p = 2.0*Vec3(rng(), rng(), 0) - Vec3(1, 1, 0);
+			} while (dot(p, p) >= 1.0);
+			return p;
+		}
 	private:
 		RNG();
 		static RNG& instance();

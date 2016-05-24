@@ -52,7 +52,11 @@ int main(int argc, const char* argv[])
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), 0.5f, std::shared_ptr<Material>(new Dielectric(1.5f)))));
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), -0.45f, std::shared_ptr<Material>(new Dielectric(1.5f)))));
 
-	Camera camera(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), 90, real(w)/real(h));
+	Vec3 lookfrom(3, 3, 2);
+	Vec3 lookat(0, 0, -1);
+	real aperture = 2.0;
+	real focus_dist = (lookfrom - lookat).length();
+	Camera camera(lookfrom, lookat, Vec3(0, 1, 0), 20, real(w)/real(h), aperture, focus_dist);
 	for (int j = 0; j < h; ++j)
 	{
 		for (int i = 0; i < w; ++i)
