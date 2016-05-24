@@ -69,6 +69,23 @@ namespace ow
 			return *this;
 		}
 
+		inline Vec3& operator*=(real t)
+		{
+			this->x *= t;
+			this->y *= t;
+			this->z *= t;
+			return *this;
+		}
+
+		inline Vec3& operator/=(real t)
+		{
+			real inv_t = 1.0f / t;
+			this->x *= inv_t;
+			this->y *= inv_t;
+			this->z *= inv_t;
+			return *this;
+		}
+
 		inline real length() const
 		{
 			return sqrt(x*x + y*y + z*z);
@@ -160,6 +177,13 @@ namespace ow
 	{
 		return vec / vec.length();
 	}
+
+	inline Vec3 reflect(const Vec3& incidence, const Vec3& normal)
+	{
+		return incidence - 2 * dot(incidence, normal) * normal;
+	}
+
+	bool refract(const Vec3& incidence, const Vec3& normal, real ni_over_nt, Vec3& refracted);
 }
 
 #endif//OW_VEC3_H
