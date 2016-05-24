@@ -15,6 +15,7 @@ SET(HEADER_FILES
     ./include/stb_image_resize.h
     ./include/stb_image_write.h
     )
+
 SET(SRC_FILES 
     ./src/main.cpp
     ./src/stb_image_write.cpp

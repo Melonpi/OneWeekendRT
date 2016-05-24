@@ -37,17 +37,33 @@ namespace ow
 	{
 	public:
 		Vec3 albedo;
+		real fuzz;
 	public:
-		Metal(const Vec3& albedo)
-			:albedo(albedo)
+		Metal(const Vec3& albedo, real fuzz)
+			:albedo(albedo), fuzz(fuzz)
 		{}
 
 		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override
 		{
 			Vec3 reflected = reflect(make_unit(in.direction), hit_info.normal);
-			scattered = Ray(hit_info.p, reflected);
+			scattered = Ray(hit_info.p, reflected + fuzz*RNG::randomInUnitSphere());
 			attenuation = albedo;
 			return dot(scattered.direction, hit_info.normal) > 0;
+		}
+	};
+
+	class Dielectric : public Material
+	{
+	public:
+		real ref_idx;
+	public:
+		Dielectric(real ri)
+			:ref_idx(ri)
+		{}
+
+		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override
+		{
+			return false;
 		}
 	};
 

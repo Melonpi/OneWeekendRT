@@ -13,6 +13,7 @@ using namespace ow;
 const int WIDTH = 200;
 const int HEIGHT = 100;
 const int SAMPLES = 100;
+const int DEPTH_MAX = 50;
 const int RGBA = 4;
 typedef unsigned char byte;
 
@@ -23,7 +24,7 @@ Vec3 color(const Ray& ray, const Hitable& scene, int depth)
 	{
 		Ray scattered;
 		Vec3 attenuation;
-		if (depth < 50 && hit_info.material->scatter(ray, hit_info, attenuation, scattered))
+		if (depth < DEPTH_MAX && hit_info.material->scatter(ray, hit_info, attenuation, scattered))
 		{
 			return attenuation * color(scattered, scene, depth + 1);
 		}else {
@@ -47,8 +48,8 @@ int main(int argc, const char* argv[])
 	HitableList scene;
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(0, 0, -1), 0.5f, std::shared_ptr<Material>(new Lambertian(Vec3(0.8f, 0.5f, 0.3f))))));
 	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(0, -100.5, -1), 100.f, std::shared_ptr<Material>(new Lambertian(Vec3(0.8f, 0.8f, 0.0f))))));
-	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.6f, 0.2f))))));
-	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.8f, 0.8f))))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.6f, 0.2f), 0.3f)))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.8f, 0.8f), 1.0f)))));
 
 	Camera camera;
 	for (int j = 0; j < h; ++j)
@@ -61,7 +62,6 @@ int main(int argc, const char* argv[])
 				real u = real(i + RNG::rng()) / real(w);
 				real v = real(j + RNG::rng()) / real(h);
 				Ray ray = camera.getRay(u, v);
-				Vec3 p = ray.pointAtParameter(2.0);
 				col += color(ray, scene, 0);
 			}
 			col /= real(s);
