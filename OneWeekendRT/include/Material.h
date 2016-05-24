@@ -24,13 +24,7 @@ namespace ow
 			albedo(albedo)
 		{}
 
-		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override
-		{
-			Vec3 target = hit_info.p + hit_info.normal + RNG::randomInUnitSphere();
-			scattered = Ray(hit_info.p, target - hit_info.p);
-			attenuation = albedo;
-			return true;
-		}
+		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override;
 	};
 
 	class Metal final : public Material
@@ -43,13 +37,7 @@ namespace ow
 			:albedo(albedo), fuzz(fuzz)
 		{}
 
-		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override
-		{
-			Vec3 reflected = reflect(make_unit(in.direction), hit_info.normal);
-			scattered = Ray(hit_info.p, reflected + fuzz*RNG::randomInUnitSphere());
-			attenuation = albedo;
-			return dot(scattered.direction, hit_info.normal) > 0;
-		}
+		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override;
 	};
 
 	class Dielectric : public Material
@@ -61,10 +49,7 @@ namespace ow
 			:ref_idx(ri)
 		{}
 
-		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override
-		{
-			return false;
-		}
+		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override;
 	};
 
 	inline real schlick(real cosine, real ref)

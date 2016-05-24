@@ -22,6 +22,8 @@ SET(SRC_FILES
 	./src/HitableList.cpp
 	./src/Sphere.cpp
 	./src/RNG.cpp
+	./src/Vec3.cpp
+	./src/Material.cpp
     )
 
 SOURCE_GROUP("Header Files" FILES ${HEADER_FILES})
