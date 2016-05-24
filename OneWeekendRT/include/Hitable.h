@@ -3,22 +3,26 @@
 
 #include "Vec3.h"
 #include "Ray.h"
+#include "Misc.h"
+#include <memory>
 
 namespace ow
 {
+	class Material;
 	struct HitInfo final
 	{
 	public:
 		real t;
 		Vec3 p;
 		Vec3 normal;
+		std::shared_ptr<Material> material;
 	public:
 		HitInfo()
 			:t(REAL_MAX)
 		{}
 	};
 
-	class Hitable
+	class Hitable : public Noncopyable
 	{
 	public:
 		Hitable() {}

@@ -5,7 +5,7 @@
 
 namespace ow
 {
-	class Ray final
+	struct Ray final
 	{
 	public:
 		Vec3 origin;

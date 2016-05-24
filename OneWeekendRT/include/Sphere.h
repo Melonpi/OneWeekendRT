@@ -12,12 +12,10 @@ namespace ow
 	public:
 		Vec3 center;
 		real radius;
+		std::shared_ptr<Material> material;
 	public:
-		Sphere()
-			:center(Vec3(0, 0, 0)), radius(1.0)
-		{}
-		Sphere(const Vec3& center, float radius)
-			:center(center), radius(radius)
+		Sphere(const Vec3& center, float radius, std::shared_ptr<Material> material)
+			:center(center), radius(radius), material(material)
 		{}
 		~Sphere()
 		{}

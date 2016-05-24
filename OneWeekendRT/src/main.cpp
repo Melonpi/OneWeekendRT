@@ -2,6 +2,8 @@
 #include "Sphere.h"
 #include "HitableList.h"
 #include "Camera.h"
+#include "RNG.h"
+#include "Material.h"
 
 using namespace ow;
 
@@ -14,32 +16,20 @@ const int SAMPLES = 100;
 const int RGBA = 4;
 typedef unsigned char byte;
 
-std::random_device rnd;
-std::mt19937_64 rne(rnd());
-std::uniform_real_distribution<real> rng(0, 1);
-
-real RNG()
-{
-	return rng(rne);
-}
-
-Vec3 randomInUnitSphere()
-{
-	Vec3 p;
-	do {
-		p = 2.0f * Vec3(RNG(), RNG(), RNG()) - Vec3(1, 1, 1);
-	} while (p.lengthSquared() >= 1.0);
-	return p;
-}
-
-Vec3 color(const Ray& ray, const Hitable& scene)
+Vec3 color(const Ray& ray, const Hitable& scene, int depth)
 {
 	HitInfo hit_info;
 	if (scene.hit(ray, REAL_EPS, REAL_MAX, hit_info))
 	{
-		Vec3 target = hit_info.p + hit_info.normal + randomInUnitSphere();
-		return 0.5f * color(Ray(hit_info.p, target - hit_info.p), scene);
-	}else{
+		Ray scattered;
+		Vec3 attenuation;
+		if (depth < 50 && hit_info.material->scatter(ray, hit_info, attenuation, scattered))
+		{
+			return attenuation * color(scattered, scene, depth + 1);
+		}else {
+			return Vec3(0, 0, 0);
+		}
+	}else {
 		Vec3 unit_direction = make_unit(ray.direction);
 		real t = 0.5f * (unit_direction.y + 1.0f);
 		return (1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
@@ -55,8 +45,11 @@ int main(int argc, const char* argv[])
 	std::unique_ptr<byte> data = std::unique_ptr<byte>(new byte[w * h * RGBA]);
 
 	HitableList scene;
-	scene.add( std::unique_ptr<Sphere>(new Sphere(Vec3(0, 0, -1), 0.5)) );
-	scene.add( std::unique_ptr<Sphere>(new Sphere(Vec3(0, -100.5, -1), 100)) );
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(0, 0, -1), 0.5f, std::shared_ptr<Material>(new Lambertian(Vec3(0.8f, 0.5f, 0.3f))))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(0, -100.5, -1), 100.f, std::shared_ptr<Material>(new Lambertian(Vec3(0.8f, 0.8f, 0.0f))))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.6f, 0.2f))))));
+	scene.add(std::unique_ptr<Sphere>(new Sphere(Vec3(-1, 0, -1), 0.5f, std::shared_ptr<Material>(new Metal(Vec3(0.8f, 0.8f, 0.8f))))));
+
 	Camera camera;
 	for (int j = 0; j < h; ++j)
 	{
@@ -65,14 +58,14 @@ int main(int argc, const char* argv[])
 			Vec3 col(0, 0, 0);
 			for (int n = 0; n < s; ++n)
 			{
-				real u = real(i + RNG()) / real(w);
-				real v = real(j + RNG()) / real(h);
+				real u = real(i + RNG::rng()) / real(w);
+				real v = real(j + RNG::rng()) / real(h);
 				Ray ray = camera.getRay(u, v);
 				Vec3 p = ray.pointAtParameter(2.0);
-				col += color(ray, scene);
+				col += color(ray, scene, 0);
 			}
 			col /= real(s);
-			col = { sqrt(col.r), sqrt(col.g), sqrt(col.b) };
+			col = { sqrt(col.r), sqrt(col.g), sqrt(col.b) };//gamma 2
 			data.get()[(h-j-1)*w*RGBA + i*RGBA    ] = int(col.r * 255.99);
 			data.get()[(h-j-1)*w*RGBA + i*RGBA + 1] = int(col.g * 255.99);
 			data.get()[(h-j-1)*w*RGBA + i*RGBA + 2] = int(col.b * 255.99);

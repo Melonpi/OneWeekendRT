@@ -6,8 +6,10 @@ SET(HEADER_FILES
     ./include/Vec3.h
     ./include/Hitable.h
 	./include/HitableList.h
+	./include/Material.h
     ./include/Misc.h
     ./include/Ray.h
+	./include/RNG.h
     ./include/Sphere.h
     ./include/stb_image.h
     ./include/stb_image_resize.h
@@ -18,6 +20,7 @@ SET(SRC_FILES
     ./src/stb_image_write.cpp
 	./src/HitableList.cpp
 	./src/Sphere.cpp
+	./src/RNG.cpp
     )
 
 SOURCE_GROUP("Header Files" FILES ${HEADER_FILES})

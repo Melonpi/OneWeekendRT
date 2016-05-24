@@ -2,10 +2,11 @@
 #define OW_CAMERA_H
 
 #include "Ray.h"
+#include "Misc.h"
 
 namespace ow
 {
-	class Camera
+	class Camera final : public Noncopyable
 	{
 	public:
 		Camera()

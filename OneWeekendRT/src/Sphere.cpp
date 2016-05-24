@@ -17,6 +17,7 @@ namespace ow
 				hit_info.t = t;
 				hit_info.p = ray.pointAtParameter(t);
 				hit_info.normal = (hit_info.p - center) / radius;
+				hit_info.material = material;
 				return true;
 			}
 			t = (-b + sqrt(discriminant)) / a;
@@ -25,6 +26,7 @@ namespace ow
 				hit_info.t = t;
 				hit_info.p = ray.pointAtParameter(t);
 				hit_info.normal = (hit_info.p - center) / radius;
+				hit_info.material = material;
 				return true;
 			}
 		}
