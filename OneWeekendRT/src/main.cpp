@@ -12,7 +12,7 @@ using namespace ow;
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
-const int SAMPLES = 10;
+const int SAMPLES = 100;
 const int DEPTH_MAX = 40;
 const int RGBA = 4;
 typedef unsigned char byte;
@@ -42,9 +42,9 @@ std::unique_ptr<HitableList> make_random_scene()
 	std::unique_ptr<HitableList> scene(new HitableList);
 	scene->add(std::make_unique<Sphere>(Vec3(0, -1000.f, 0), 1000.0f, std::make_unique<Lambertian>(Vec3(0.5f, 0.5f, 0.5f))));
 
-	for (int i = -11; i < 11; ++i)
+	for (int i = -3; i < 3; ++i)
 	{
-		for (int j = -11; j < 11; ++j)
+		for (int j = -3; j < 3; ++j)
 		{
 			real material_seed = RNG::rng();
 			Vec3 center(i + 0.9f*RNG::rng(), 0.2f, j + 0.9f*RNG::rng());

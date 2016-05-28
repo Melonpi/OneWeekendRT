@@ -20,7 +20,7 @@ namespace ow
 	public:
 		Vec3 albedo;
 	public:
-		Lambertian(const Vec3& albedo):
+		explicit Lambertian(const Vec3& albedo):
 			albedo(albedo)
 		{}
 
@@ -45,7 +45,7 @@ namespace ow
 	public:
 		real ref_idx;
 	public:
-		Dielectric(real ri)
+		explicit Dielectric(real ri)
 			:ref_idx(ri)
 		{}
 
