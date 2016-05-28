@@ -52,7 +52,8 @@ std::unique_ptr<HitableList> make_random_scene()
 			{
 				if (material_seed < 0.8)//diffuse
 				{
-					scene->add(std::make_unique<Sphere>(center, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					//scene->add(std::make_unique<Sphere>(center, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					scene->add(std::make_unique<MovingSphere>(center, center + Vec3(0, 0.5 * RNG::rng(), 0), 0.0, 1.0, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
 				}
 				else if (material_seed < 0.95)//metal
 				{
@@ -83,9 +84,9 @@ int main(int argc, const char* argv[])
 
 	Vec3 lookfrom(13, 2, 3);
 	Vec3 lookat(0, 0, 0);
-	real aperture = 0.1f;
+	real aperture = 0.0f;
 	real focus_dist = 10.0f;
-	Camera camera(lookfrom, lookat, Vec3(0, 1, 0), 20, real(w)/real(h), aperture, focus_dist);
+	Camera camera(lookfrom, lookat, Vec3(0, 1, 0), 20, real(w)/real(h), aperture, focus_dist, 0.0, 1.0);
 	for (int j = 0; j < h; ++j)
 	{
 		for (int i = 0; i < w; ++i)

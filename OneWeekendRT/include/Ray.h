@@ -10,13 +10,14 @@ namespace ow
 	public:
 		Vec3 origin;
 		Vec3 direction;
+		real time;
 	public:
 		Ray() {}
 		Ray(const Ray& ray)
 			:origin(ray.origin), direction(ray.direction)
 		{}
-		Ray(const Vec3& origin, const Vec3& direction)
-			:origin(origin), direction(direction)
+		Ray(const Vec3& origin, const Vec3& direction, real time = 0.0)
+			:origin(origin), direction(direction), time(time)
 		{}
 
 		Vec3 pointAtParameter(real t) const

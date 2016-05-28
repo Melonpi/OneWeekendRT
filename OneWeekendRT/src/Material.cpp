@@ -5,7 +5,7 @@ namespace ow
 	bool Lambertian::scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const
 	{
 		Vec3 target = hit_info.p + hit_info.normal + RNG::randomInUnitSphere();
-		scattered = Ray(hit_info.p, target - hit_info.p);
+		scattered = Ray(hit_info.p, target - hit_info.p, in.time);
 		attenuation = albedo;
 		return true;
 	}
@@ -13,7 +13,7 @@ namespace ow
 	bool Metal::scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const
 	{
 		Vec3 reflected = reflect(make_unit(in.direction), hit_info.normal);
-		scattered = Ray(hit_info.p, reflected + fuzz*RNG::randomInUnitSphere());
+		scattered = Ray(hit_info.p, reflected + fuzz*RNG::randomInUnitSphere(), in.time);
 		attenuation = albedo;
 		return dot(scattered.direction, hit_info.normal) > 0;
 	}
@@ -43,14 +43,14 @@ namespace ow
 		{
 			reflect_ratio = schlick(cosine, ref_idx);
 		}else{
-			scattered = Ray(hit_info.p, reflected);
+			scattered = Ray(hit_info.p, reflected, in.time);
 			reflect_ratio = 1.0;
 		}
 		if (RNG::rng() < reflect_ratio)
 		{
-			scattered = Ray(hit_info.p, reflected);
+			scattered = Ray(hit_info.p, reflected, in.time);
 		}else{
-			scattered = Ray(hit_info.p, refracted);
+			scattered = Ray(hit_info.p, refracted, in.time);
 		}
 
 		return true;
