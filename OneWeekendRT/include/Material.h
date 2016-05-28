@@ -35,7 +35,9 @@ namespace ow
 	public:
 		Metal(const Vec3& albedo, real fuzz)
 			:albedo(albedo), fuzz(fuzz)
-		{}
+		{
+			OW_EXPECT(fuzz >= 0 && fuzz <= 1.0);
+		}
 
 		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override;
 	};
