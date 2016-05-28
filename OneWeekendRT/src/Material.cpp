@@ -6,7 +6,7 @@ namespace ow
 	{
 		Vec3 target = hit_info.p + hit_info.normal + RNG::randomInUnitSphere();
 		scattered = Ray(hit_info.p, target - hit_info.p, in.time);
-		attenuation = albedo;
+		attenuation = albedo_->value(0, 0, hit_info.p);
 		return true;
 	}
 

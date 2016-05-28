@@ -40,7 +40,8 @@ Vec3 color(const Ray& ray, const Hitable& scene, int depth)
 std::unique_ptr<HitableList> make_random_scene()
 {
 	std::unique_ptr<HitableList> scene(new HitableList);
-	scene->add(std::make_unique<Sphere>(Vec3(0, -1000.f, 0), 1000.0f, std::make_unique<Lambertian>(Vec3(0.5f, 0.5f, 0.5f))));
+	std::unique_ptr<Texture> checker_texture = std::make_unique<CheckerTexture>(std::make_unique<ConstantTexture>(Vec3(0.2, 0.3, 0.1)), std::make_unique<ConstantTexture>(Vec3(0.9, 0.9, 0.9)));
+	scene->add(std::make_unique<Sphere>(Vec3(0, -1000.f, 0), 1000.0f, std::make_unique<Lambertian>(std::move(checker_texture))));
 
 	for (int i = -3; i < 3; ++i)
 	{
@@ -53,7 +54,9 @@ std::unique_ptr<HitableList> make_random_scene()
 				if (material_seed < 0.8)//diffuse
 				{
 					//scene->add(std::make_unique<Sphere>(center, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
-					scene->add(std::make_unique<MovingSphere>(center, center + Vec3(0, 0.5 * RNG::rng(), 0), 0.0, 1.0, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					//scene->add(std::make_unique<MovingSphere>(center, center + Vec3(0, 0.5 * RNG::rng(), 0), 0.0, 1.0, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					std::unique_ptr<Texture> constant_texture = std::make_unique<ConstantTexture>(Vec3(RNG::rng()*RNG::rng(),RNG::rng()*RNG::rng(),RNG::rng()*RNG::rng()));
+					scene->add(std::make_unique<MovingSphere>(center, center + Vec3(0, 0.5 * RNG::rng(), 0), 0.0, 1.0, 0.2f, std::make_unique<Lambertian>(std::move(constant_texture))));
 				}
 				else if (material_seed < 0.95)//metal
 				{
@@ -67,8 +70,9 @@ std::unique_ptr<HitableList> make_random_scene()
 	}
 
 	scene->add(std::make_unique<Sphere>(Vec3(0.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Dielectric>(1.5f)));
-	scene->add(std::make_unique<Sphere>(Vec3(-4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Lambertian>(Vec3(0.4f, 0.2f, 0.1f))));
 	scene->add(std::make_unique<Sphere>(Vec3(4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Metal>(Vec3(0.7f, 0.6f, 0.5f), 0.0f)));
+	std::unique_ptr<Texture> constant_texture = std::make_unique<ConstantTexture>(Vec3(0.4f, 0.2f, 0.1f));
+	scene->add(std::make_unique<Sphere>(Vec3(-4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Lambertian>(std::move(constant_texture))));
 	return std::move(scene);
 }
 

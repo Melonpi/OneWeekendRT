@@ -5,6 +5,7 @@
 #include "Hitable.h"
 #include "Misc.h"
 #include "RNG.h"
+#include "Texture.h"
 
 namespace ow
 {
@@ -18,13 +19,13 @@ namespace ow
 	class Lambertian final : public Material
 	{
 	public:
-		Vec3 albedo;
-	public:
-		explicit Lambertian(const Vec3& albedo):
-			albedo(albedo)
+		explicit Lambertian(std::unique_ptr<Texture>&& albedo)
+			:albedo_(std::move(albedo))
 		{}
 
 		virtual bool scatter(const Ray& in, const HitInfo& hit_info, Vec3& attenuation, Ray& scattered) const override;
+	private:
+		std::unique_ptr<Texture> albedo_;
 	};
 
 	class Metal final : public Material
