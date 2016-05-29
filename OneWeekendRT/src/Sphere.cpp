@@ -32,4 +32,35 @@ namespace ow
 		}
 		return false;
 	}
+
+	bool MovingSphere::hit(const Ray& ray, real t_min, real t_max, HitInfo& hit_info) const
+	{
+		Vec3 ray2center = ray.origin - getCenter(ray.time);
+		real a = dot(ray.direction, ray.direction);
+		real b = dot(ray2center, ray.direction);
+		real c = dot(ray2center, ray2center) - radius*radius;
+		real discriminant = b*b - a*c;
+		if (discriminant > 0)
+		{
+			real t = (-b - sqrt(discriminant)) / a;
+			if (t < t_max && t > t_min)
+			{
+				hit_info.t = t;
+				hit_info.p = ray.pointAtParameter(t);
+				hit_info.normal = (hit_info.p - getCenter(ray.time)) / radius;
+				hit_info.material = material;
+				return true;
+			}
+			t = (-b + sqrt(discriminant)) / a;
+			if (t < t_max && t > t_min)
+			{
+				hit_info.t = t;
+				hit_info.p = ray.pointAtParameter(t);
+				hit_info.normal = (hit_info.p - getCenter(ray.time)) / radius;
+				hit_info.material = material;
+				return true;
+			}
+		}
+		return false;
+	}
 }

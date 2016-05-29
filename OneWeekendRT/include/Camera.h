@@ -11,7 +11,8 @@ namespace ow
 	class Camera final : public Noncopyable
 	{
 	public:
-		Camera(const Vec3& lookfrom, const Vec3& lookat, const Vec3& up, real fov, real aspect, real aperture, real focus_dist)
+		Camera(const Vec3& lookfrom, const Vec3& lookat, const Vec3& up, real fov, real aspect, real aperture, real focus_dist, real start_time, real end_time)
+			:start_time_(start_time), end_time_(end_time)
 		{
 			lens_radius_ = aperture / 2;
 			real theta = fov * M_PI / 180.0f;
@@ -32,7 +33,8 @@ namespace ow
 		{
 			Vec3 ray = lens_radius_ * RNG::randomInUnitDisk();
 			Vec3 offset = u_ * ray.x + v_ * ray.y;
-			return Ray(origin_ + offset, lower_left_corner_ + u*horizontal_ + v*vertical_ - origin_ - offset);
+			real time = start_time_ + RNG::rng() * (end_time_ - start_time_);
+			return Ray(origin_ + offset, lower_left_corner_ + u*horizontal_ + v*vertical_ - origin_ - offset, time);
 		}
 	private:
 		Vec3 origin_;
@@ -41,6 +43,7 @@ namespace ow
 		Vec3 vertical_;
 		Vec3 u_, v_, w_;
 		real lens_radius_;
+		real start_time_, end_time_;
 	};
 }
 

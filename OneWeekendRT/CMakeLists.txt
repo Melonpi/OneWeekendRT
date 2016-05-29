@@ -11,6 +11,8 @@ SET(HEADER_FILES
     ./include/Ray.h
 	./include/RNG.h
     ./include/Sphere.h
+	./include/Texture.h
+	./include/ThreadPool.h
     ./include/stb_image.h
     ./include/stb_image_resize.h
     ./include/stb_image_write.h

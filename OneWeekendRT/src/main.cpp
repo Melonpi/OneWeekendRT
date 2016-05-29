@@ -12,7 +12,7 @@ using namespace ow;
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
-const int SAMPLES = 10;
+const int SAMPLES = 100;
 const int DEPTH_MAX = 40;
 const int RGBA = 4;
 typedef unsigned char byte;
@@ -40,11 +40,12 @@ Vec3 color(const Ray& ray, const Hitable& scene, int depth)
 std::unique_ptr<HitableList> make_random_scene()
 {
 	std::unique_ptr<HitableList> scene(new HitableList);
-	scene->add(std::make_unique<Sphere>(Vec3(0, -1000.f, 0), 1000.0f, std::make_unique<Lambertian>(Vec3(0.5f, 0.5f, 0.5f))));
+	std::unique_ptr<Texture> checker_texture = std::make_unique<CheckerTexture>(std::make_unique<ConstantTexture>(Vec3(0.2, 0.3, 0.1)), std::make_unique<ConstantTexture>(Vec3(0.9, 0.9, 0.9)));
+	scene->add(std::make_unique<Sphere>(Vec3(0, -1000.f, 0), 1000.0f, std::make_unique<Lambertian>(std::move(checker_texture))));
 
-	for (int i = -11; i < 11; ++i)
+	for (int i = -3; i < 3; ++i)
 	{
-		for (int j = -11; j < 11; ++j)
+		for (int j = -3; j < 3; ++j)
 		{
 			real material_seed = RNG::rng();
 			Vec3 center(i + 0.9f*RNG::rng(), 0.2f, j + 0.9f*RNG::rng());
@@ -52,7 +53,10 @@ std::unique_ptr<HitableList> make_random_scene()
 			{
 				if (material_seed < 0.8)//diffuse
 				{
-					scene->add(std::make_unique<Sphere>(center, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					//scene->add(std::make_unique<Sphere>(center, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					//scene->add(std::make_unique<MovingSphere>(center, center + Vec3(0, 0.5 * RNG::rng(), 0), 0.0, 1.0, 0.2f, std::make_unique<Lambertian>(Vec3(RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng(), RNG::rng()*RNG::rng()))));
+					std::unique_ptr<Texture> constant_texture = std::make_unique<ConstantTexture>(Vec3(RNG::rng()*RNG::rng(),RNG::rng()*RNG::rng(),RNG::rng()*RNG::rng()));
+					scene->add(std::make_unique<MovingSphere>(center, center + Vec3(0, 0.5 * RNG::rng(), 0), 0.0, 1.0, 0.2f, std::make_unique<Lambertian>(std::move(constant_texture))));
 				}
 				else if (material_seed < 0.95)//metal
 				{
@@ -66,8 +70,9 @@ std::unique_ptr<HitableList> make_random_scene()
 	}
 
 	scene->add(std::make_unique<Sphere>(Vec3(0.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Dielectric>(1.5f)));
-	scene->add(std::make_unique<Sphere>(Vec3(-4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Lambertian>(Vec3(0.4f, 0.2f, 0.1f))));
 	scene->add(std::make_unique<Sphere>(Vec3(4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Metal>(Vec3(0.7f, 0.6f, 0.5f), 0.0f)));
+	std::unique_ptr<Texture> constant_texture = std::make_unique<ConstantTexture>(Vec3(0.4f, 0.2f, 0.1f));
+	scene->add(std::make_unique<Sphere>(Vec3(-4.0f, 1.0f, 0.0f), 1.0f, std::make_unique<Lambertian>(std::move(constant_texture))));
 	return std::move(scene);
 }
 
@@ -83,9 +88,9 @@ int main(int argc, const char* argv[])
 
 	Vec3 lookfrom(13, 2, 3);
 	Vec3 lookat(0, 0, 0);
-	real aperture = 0.1f;
+	real aperture = 0.0f;
 	real focus_dist = 10.0f;
-	Camera camera(lookfrom, lookat, Vec3(0, 1, 0), 20, real(w)/real(h), aperture, focus_dist);
+	Camera camera(lookfrom, lookat, Vec3(0, 1, 0), 20, real(w)/real(h), aperture, focus_dist, 0.0, 1.0);
 	for (int j = 0; j < h; ++j)
 	{
 		for (int i = 0; i < w; ++i)
