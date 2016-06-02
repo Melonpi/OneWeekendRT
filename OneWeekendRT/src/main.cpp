@@ -13,6 +13,7 @@ using namespace ow;
 
 #include <random>
 #include <iostream>
+#include <chrono>
 
 const int WIDTH = 400;
 const int HEIGHT = 300;
@@ -80,7 +81,10 @@ std::unique_ptr<HitableList> make_random_scene()
 
 inline void printProgress(int current, int total)
 {
-	std::cout << "pixels: " << current <<"/" << total <<"\n";
+	static tbb::spin_mutex mutex;
+
+	tbb::spin_mutex::scoped_lock lock(mutex);
+	std::cout<< "\rpixels: " << current << "/" << total << std::flush;
 }
 
 int main(int argc, const char* argv[])
@@ -100,6 +104,7 @@ int main(int argc, const char* argv[])
 	real focus_dist = 10.0f;
 	Camera camera(lookfrom, lookat, Vec3(0, 1, 0), 20, real(w)/real(h), aperture, focus_dist, 0.0, 1.0);
 
+	auto start_time = std::chrono::steady_clock::now();
 	tbb::parallel_for(size_t(0), size_t(w*h),
 		[w, h, s, &data, &scene, &camera, &rendered_pixels](size_t r) {
 		Vec3 col(0, 0, 0);
@@ -122,6 +127,8 @@ int main(int argc, const char* argv[])
 		rendered_pixels++;
 		printProgress(rendered_pixels, w*h);
 	});
+	auto time_span = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time);
+	std::cout << "\ntime elapsed:" << time_span.count() << " seconds.\n";
 	if (stbi_write_png("output.png", WIDTH, HEIGHT, RGBA, data.get(), 0) == 0)
 	{
 		std::cout << "write png file failed.\n";
@@ -129,6 +136,7 @@ int main(int argc, const char* argv[])
 	else {
 		std::cout << "write png file as output.png\n";
 	}
+	system("PAUSE");
 
 	return 0;
 }
